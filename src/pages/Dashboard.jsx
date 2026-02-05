@@ -59,7 +59,7 @@ function Dashboard() {
     if (
       status === 'failure' &&
       !window.confirm(
-        'This task will be moved to Failed Tasks and auto-deleted after 2 days. Continue?'
+        'This task will move to Failed Tasks and auto-delete after 2 days. Continue?'
       )
     ) {
       return
@@ -67,6 +67,21 @@ function Dashboard() {
 
     await api.patch(`/tasks/${taskId}/`, { status })
     fetchTasks()
+  }
+
+  const addReminder = async (taskId) => {
+    if (!reminderTime) {
+      alert('Please select reminder date & time')
+      return
+    }
+
+    await api.post('/create-reminder/', {
+      task: taskId,
+      remind_at: reminderTime,
+    })
+
+    alert('Reminder set')
+    setReminderTime('')
   }
 
   const deleteTask = async (taskId) => {
@@ -82,7 +97,7 @@ function Dashboard() {
     <div className="container">
       <h1>Progress Tracker</h1>
 
-      {/* Create Task */}
+      {/* CREATE TASK */}
       <form onSubmit={createTask} className="card">
         <input
           placeholder="Task title"
@@ -127,11 +142,17 @@ function Dashboard() {
                   <h3>{task.title}</h3>
 
                   {task.description && (
-                    <p className="description">
-                      {task.description}
+                    <p className="description">{task.description}</p>
+                  )}
+
+                  {/* TARGET DATE */}
+                  {task.target_date && (
+                    <p className="date">
+                      🎯 {new Date(task.target_date).toLocaleString()}
                     </p>
                   )}
 
+                  {/* ACTIONS */}
                   <div className="actions">
                     <button
                       className="success"
@@ -149,6 +170,24 @@ function Dashboard() {
                       }
                     >
                       ❌
+                    </button>
+                  </div>
+
+                  {/* REMINDER */}
+                  <div className="reminder-box">
+                    <input
+                      type="datetime-local"
+                      onChange={e =>
+                        setReminderTime(e.target.value)
+                      }
+                    />
+                    <button
+                      className="reminder"
+                      onClick={() =>
+                        addReminder(task.id)
+                      }
+                    >
+                      ⏰ Set Reminder
                     </button>
                   </div>
                 </div>
@@ -175,9 +214,7 @@ function Dashboard() {
                 <h3>{task.title}</h3>
 
                 {task.description && (
-                  <p className="description">
-                    {task.description}
-                  </p>
+                  <p className="description">{task.description}</p>
                 )}
 
                 <button
