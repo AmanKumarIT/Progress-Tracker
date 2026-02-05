@@ -13,6 +13,7 @@ function Dashboard() {
 
   const [tasks, setTasks] = useState([])
   const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
   const [category, setCategory] = useState('project')
   const [reminderTime, setReminderTime] = useState('')
   const [showFailed, setShowFailed] = useState(false)
@@ -43,11 +44,13 @@ function Dashboard() {
 
     await api.post('/tasks/', {
       title,
+      description,
       category,
       status: 'progress',
     })
 
     setTitle('')
+    setDescription('')
     setCategory('project')
     fetchTasks()
   }
@@ -87,6 +90,13 @@ function Dashboard() {
           onChange={e => setTitle(e.target.value)}
         />
 
+        <textarea
+          placeholder="Task description (optional)"
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          rows="3"
+        />
+
         <select
           value={category}
           onChange={e => setCategory(e.target.value)}
@@ -101,7 +111,7 @@ function Dashboard() {
         <button>Add Task</button>
       </form>
 
-      {/* MAIN BOARD (NO FAILED TASKS) */}
+      {/* MAIN BOARD */}
       <div className="board">
         {CATEGORIES.map(col => (
           <div key={col.key} className="column">
@@ -115,6 +125,12 @@ function Dashboard() {
                   className={`task-card ${task.status}`}
                 >
                   <h3>{task.title}</h3>
+
+                  {task.description && (
+                    <p className="description">
+                      {task.description}
+                    </p>
+                  )}
 
                   <div className="actions">
                     <button
@@ -141,7 +157,7 @@ function Dashboard() {
         ))}
       </div>
 
-      {/* FAILED TASKS TOGGLE */}
+      {/* FAILED TASKS */}
       <div className="failed-section">
         <button
           className="failed-toggle"
@@ -154,13 +170,16 @@ function Dashboard() {
 
         {showFailed && (
           <div className="failed-list">
-            {failedTasks.length === 0 && (
-              <p>No failed tasks 🎉</p>
-            )}
-
             {failedTasks.map(task => (
               <div key={task.id} className="task-card failure">
                 <h3>{task.title}</h3>
+
+                {task.description && (
+                  <p className="description">
+                    {task.description}
+                  </p>
+                )}
+
                 <button
                   className="delete"
                   onClick={() => deleteTask(task.id)}

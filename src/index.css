@@ -122,3 +122,18 @@ button {
   margin-top: 8px;
 }
 
+textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  margin: 8px 0;
+  resize: vertical;
+}
+
+.description {
+  font-size: 13px;
+  color: #cbd5f5;
+  margin: 6px 0;
+  line-height: 1.4;
+}
