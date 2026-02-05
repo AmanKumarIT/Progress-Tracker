@@ -26,27 +26,34 @@ function Login() {
   }
 
   return (
-    <div>
-      <h2>Login</h2>
+    <div className="login-container">
+      <div className="login-card">
+        <h2 className="login-title">Progress Tracker</h2>
+        <p className="login-subtitle">
+          Track. Improve. Succeed.
+        </p>
 
-      <form onSubmit={handleLogin}>
-        <input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-        <br />
+        <form onSubmit={handleLogin}>
+          <input
+            className="login-input"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <br />
+          <input
+            className="login-input"
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button type="submit">Login</button>
-      </form>
+          <button className="login-button" type="submit">
+            Login
+          </button>
+        </form>
+      </div>
     </div>
   )
 }

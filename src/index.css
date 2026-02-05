@@ -137,3 +137,71 @@ textarea {
   margin: 6px 0;
   line-height: 1.4;
 }
+
+/* ======================
+   LOGIN PAGE
+====================== */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at top, #1e293b, #020617);
+}
+
+.login-card {
+  background: #020617;
+  padding: 40px 30px;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+  text-align: center;
+}
+
+.login-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: #38bdf8;
+  margin-bottom: 6px;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+
+.login-subtitle {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-bottom: 24px;
+}
+
+.login-input {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border-radius: 8px;
+  border: none;
+  background: #0f172a;
+  color: white;
+  outline: none;
+}
+
+.login-input::placeholder {
+  color: #64748b;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+}
