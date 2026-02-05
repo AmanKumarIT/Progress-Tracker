@@ -1,45 +1,101 @@
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: #0f172a;
+  color: white;
 }
 
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: auto;
   padding: 20px;
 }
 
 .card {
-  background: #fff;
+  background: #020617;
   padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+input,
+select {
+  padding: 6px;
+  margin-right: 8px;
   border-radius: 6px;
-  margin-bottom: 15px;
+  border: none;
 }
 
 button {
-  margin-right: 8px;
-  padding: 6px 12px;
+  padding: 6px 10px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
+.board {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.column {
+  min-width: 300px;
+  background: #020617;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.column-title {
+  text-align: center;
+  color: #38bdf8;
+  margin-bottom: 10px;
+}
+
+.task-card {
+  background: #020617;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 8px #1e293b;
+}
+
+.task-card.success {
+  box-shadow: 0 0 15px #22c55e;
+}
+
+.task-card.failure {
+  box-shadow: 0 0 15px #ef4444;
+}
+
+.task-card.progress {
+  box-shadow: 0 0 12px #64748b;
+}
+
+.actions {
+  margin-top: 8px;
+}
+
 .success {
-  background: #4caf50;
-  color: white;
+  background: #22c55e;
+  color: black;
 }
 
 .fail {
-  background: #f44336;
+  background: #ef4444;
   color: white;
 }
 
 .reminder {
-  background: #673ab7;
+  background: #6366f1;
   color: white;
 }
 
-input {
-  padding: 6px;
-  margin-right: 8px;
+.reminder-box {
+  margin-top: 10px;
+}
+
+.history {
+  font-size: 12px;
+  margin-top: 8px;
+  color: #94a3b8;
 }
