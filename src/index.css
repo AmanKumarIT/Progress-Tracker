@@ -205,3 +205,72 @@ textarea {
   transform: translateY(-2px);
   box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
 }
+
+/* =========================
+   CLEAN TASK ACTION BUTTONS
+========================= */
+
+.task-card {
+  position: relative;
+}
+
+/* Action container */
+.task-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 6px;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Show on hover */
+.task-card:hover .task-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Icon button base */
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transition: background 0.2s, transform 0.15s;
+}
+
+/* Hover feedback */
+.icon-btn:hover {
+  transform: scale(1.08);
+}
+
+/* Semantic colors */
+.icon-btn.success:hover {
+  background: rgba(34, 197, 94, 0.85);
+}
+
+.icon-btn.fail:hover {
+  background: rgba(239, 68, 68, 0.85);
+}
+
+.icon-btn.edit:hover {
+  background: rgba(99, 102, 241, 0.85);
+}
+
+/* Mobile: always visible */
+@media (max-width: 768px) {
+  .task-actions {
+    opacity: 1;
+    transform: none;
+  }
+}

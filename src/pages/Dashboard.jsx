@@ -238,29 +238,32 @@ function Dashboard() {
                           </p>
                         )}
 
-                      <div className="actions">
-                        <button
-                          onClick={() =>
-                            updateStatus(task.id, 'success')
-                          }
-                        >
-                          ✅
-                        </button>
+                      <div className="task-actions">
+  <button
+    className="icon-btn success"
+    title="Mark Success"
+    onClick={() => updateStatus(task.id, 'success')}
+  >
+    ✓
+  </button>
 
-                        <button
-                          onClick={() =>
-                            updateStatus(task.id, 'failure')
-                          }
-                        >
-                          ❌
-                        </button>
+  <button
+    className="icon-btn fail"
+    title="Mark Failed"
+    onClick={() => updateStatus(task.id, 'failure')}
+  >
+    ✕
+  </button>
 
-                        <button
-                          onClick={() => startEdit(task)}
-                        >
-                          ✏️
-                        </button>
-                      </div>
+  <button
+    className="icon-btn edit"
+    title="Edit Task"
+    onClick={() => startEdit(task)}
+  >
+    ✎
+  </button>
+</div>
+
                     </>
                   )}
                 </div>
