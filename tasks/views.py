@@ -1,27 +1,34 @@
-from rest_framework import viewsets, status
-from rest_framework.response import Response
-from .models import Task, TaskHistory
-from .serializers import TaskSerializer
-from django.utils import timezone
+# imports
+from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from django.core.mail import send_mail
-from .models import Reminder
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.utils import timezone
+from django.core.mail import send_mail
+from datetime import timedelta
 
+from .models import Task, TaskHistory, Reminder
+from .serializers import TaskSerializer, ReminderSerializer
+
+
+# =========================
+# CLASS-BASED VIEW (TASKS)
+# =========================
 
 class TaskViewSet(viewsets.ModelViewSet):
-    queryset = Task.objects.all().order_by('-created_at')
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Task.objects.all().order_by("-created_at")
 
     def update(self, request, *args, **kwargs):
         task = self.get_object()
         old_status = task.status
 
         response = super().update(request, *args, **kwargs)
-        new_status = response.data.get('status')
+        task.refresh_from_db()
+        new_status = task.status
 
         if old_status != new_status:
             TaskHistory.objects.create(
@@ -30,13 +37,21 @@ class TaskViewSet(viewsets.ModelViewSet):
                 new_status=new_status
             )
 
-            if new_status == 'FAILED':
+            if new_status == "failure":
                 task.failed_at = timezone.now()
-                task.save()
+            else:
+                task.failed_at = None
+
+            task.save(update_fields=["failed_at"])
 
         return response
 
-@api_view(['GET'])
+
+# =========================
+# FUNCTION-BASED VIEWS
+# =========================
+
+@api_view(["GET"])
 def check_reminders(request):
     now = timezone.now()
 
@@ -52,44 +67,38 @@ def check_reminders(request):
 
         send_mail(
             subject=f"Reminder: {task.title}",
-            message=f"Task: {task.title}\nStatus: {task.status}",
+            message=(
+                f"Task: {task.title}\n"
+                f"Category: {task.category}\n"
+                f"Status: {task.status}"
+            ),
             from_email=None,
-            recipient_list=['akpailwar120@example.com'],
+            recipient_list=["akpailwar120@example.com"],
             fail_silently=True,
         )
 
         reminder.is_sent = True
-        reminder.save()
+        reminder.save(update_fields=["is_sent"])
         sent_count += 1
 
-    return Response({
-        "message": f"{sent_count} reminders sent"
-    })
+    return Response({"sent": sent_count})
 
-from rest_framework.decorators import api_view
-from .models import Reminder
-from .serializers import ReminderSerializer
 
-@api_view(['POST'])
+@api_view(["POST"])
 def create_reminder(request):
     serializer = ReminderSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return Response(serializer.data)
 
-from datetime import timedelta
-from django.utils import timezone
-from rest_framework.decorators import api_view
 
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 def cleanup_failed_tasks(request):
     cutoff = timezone.now() - timedelta(days=2)
 
     deleted_count, _ = Task.objects.filter(
-        status='FAILED',
+        status="failure",
         failed_at__lte=cutoff
     ).delete()
 
-    return Response({
-        "deleted": deleted_count
-    })
+    return Response({"deleted": deleted_count})
