@@ -15,6 +15,7 @@ function Dashboard() {
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState('project')
   const [reminderTime, setReminderTime] = useState('')
+  const [showFailed, setShowFailed] = useState(false)
 
   const fetchTasks = async () => {
     try {
@@ -55,7 +56,7 @@ function Dashboard() {
     if (
       status === 'failure' &&
       !window.confirm(
-        'Marking as failure will auto-delete after 2 days. Continue?'
+        'This task will be moved to Failed Tasks and auto-deleted after 2 days. Continue?'
       )
     ) {
       return
@@ -65,20 +66,14 @@ function Dashboard() {
     fetchTasks()
   }
 
-  const addReminder = async (taskId) => {
-    if (!reminderTime) {
-      alert('Please select date & time')
-      return
-    }
-
-    await api.post('/create-reminder/', {
-      task: taskId,
-      remind_at: reminderTime,
-    })
-
-    alert('Reminder set')
-    setReminderTime('')
+  const deleteTask = async (taskId) => {
+    if (!window.confirm('Delete this failed task permanently?')) return
+    await api.delete(`/tasks/${taskId}/`)
+    fetchTasks()
   }
+
+  const activeTasks = tasks.filter(t => t.status !== 'failure')
+  const failedTasks = tasks.filter(t => t.status === 'failure')
 
   return (
     <div className="container">
@@ -106,13 +101,13 @@ function Dashboard() {
         <button>Add Task</button>
       </form>
 
-      {/* Trello Board */}
+      {/* MAIN BOARD (NO FAILED TASKS) */}
       <div className="board">
         {CATEGORIES.map(col => (
           <div key={col.key} className="column">
             <h2 className="column-title">{col.label}</h2>
 
-            {tasks
+            {activeTasks
               .filter(t => t.category === col.key)
               .map(task => (
                 <div
@@ -120,10 +115,6 @@ function Dashboard() {
                   className={`task-card ${task.status}`}
                 >
                   <h3>{task.title}</h3>
-
-                  <p>
-                    Status: <b>{task.status}</b>
-                  </p>
 
                   <div className="actions">
                     <button
@@ -144,37 +135,42 @@ function Dashboard() {
                       ❌
                     </button>
                   </div>
-
-                  {/* History */}
-                  <div className="history">
-                    {task.history.map(h => (
-                      <div key={h.id}>
-                        {h.old_status} → {h.new_status}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Reminder */}
-                  <div className="reminder-box">
-                    <input
-                      type="datetime-local"
-                      onChange={e =>
-                        setReminderTime(e.target.value)
-                      }
-                    />
-                    <button
-                      className="reminder"
-                      onClick={() =>
-                        addReminder(task.id)
-                      }
-                    >
-                      ⏰
-                    </button>
-                  </div>
                 </div>
               ))}
           </div>
         ))}
+      </div>
+
+      {/* FAILED TASKS TOGGLE */}
+      <div className="failed-section">
+        <button
+          className="failed-toggle"
+          onClick={() => setShowFailed(!showFailed)}
+        >
+          {showFailed
+            ? 'Hide Failed Tasks'
+            : `Show Failed Tasks (${failedTasks.length})`}
+        </button>
+
+        {showFailed && (
+          <div className="failed-list">
+            {failedTasks.length === 0 && (
+              <p>No failed tasks 🎉</p>
+            )}
+
+            {failedTasks.map(task => (
+              <div key={task.id} className="task-card failure">
+                <h3>{task.title}</h3>
+                <button
+                  className="delete"
+                  onClick={() => deleteTask(task.id)}
+                >
+                  🗑 Delete
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

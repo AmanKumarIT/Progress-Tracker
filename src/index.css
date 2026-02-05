@@ -99,3 +99,26 @@ button {
   margin-top: 8px;
   color: #94a3b8;
 }
+
+.failed-section {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.failed-toggle {
+  background: #334155;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.failed-list {
+  margin-top: 20px;
+}
+
+.delete {
+  background: #7f1d1d;
+  color: white;
+  margin-top: 8px;
+}
+
